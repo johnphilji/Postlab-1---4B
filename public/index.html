@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CineVault — Premium Movie Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">🎬</span>
+          <span class="logo-text">CineVault</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <span class="nav-label">Menu</span>
+          <a href="#" class="nav-link active">
+            <span class="nav-icon">🏠</span> Browse
+          </a>
+          <a href="#" class="nav-link">
+            <span class="nav-icon">❤️</span> Watchlist
+          </a>
+          <a href="#" class="nav-link">
+            <span class="nav-icon">📅</span> Coming Soon
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <span class="nav-label">Social</span>
+          <a href="#" class="nav-link">
+            <span class="nav-icon">👥</span> Friends
+          </a>
+          <a href="#" class="nav-link">
+            <span class="nav-icon">💬</span> Parties
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="openAddModal" class="btn btn-add">
+          <span class="btn-icon">＋</span> Add Movie
+        </button>
+      </div>
+    </aside>
+
+    <!-- ── MAIN CONTENT ── -->
+    <main class="main-content">
+      <!-- ── TOP HEADER ── -->
+      <header class="top-header">
+        <div class="header-left">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search movies, genres..." />
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="rating-filter">
+            <select id="ratingFilterSelect">
+              <option value="">All Ratings</option>
+              <option value="5">★ 5 Stars</option>
+              <option value="4">★ 4 Stars</option>
+              <option value="3">★ 3 Stars</option>
+              <option value="2">★ 2 Stars</option>
+              <option value="1">★ 1 Star</option>
+            </select>
+          </div>
+          <button class="icon-btn" title="Notifications">🔔</button>
+          <div class="profile-pill">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Profile" class="avatar" />
+            <span class="profile-name">John Doe</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ── HERO SECTION ── -->
+      <section id="heroSection" class="hero-section">
+        <div class="hero-image-overlay"></div>
+        <div class="hero-content">
+          <div class="hero-badge">Featured Selection</div>
+          <h1 id="heroTitle" class="hero-title">Loading Featured...</h1>
+          <div class="hero-meta">
+            <span id="heroRating" class="hero-star">★ 5.0</span>
+            <span id="heroGenre" class="hero-genre">Sci-Fi</span>
+            <span class="hero-lang">English</span>
+          </div>
+          <div class="hero-actions">
+            <button class="btn btn-primary">Watch Now</button>
+            <button id="heroEditBtn" class="btn btn-secondary">Edit Details</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── MOVIE SECTIONS ── -->
+      <div class="content-sections">
+        <section class="movie-section">
+          <div class="section-header">
+            <h2 class="section-title">Your Recommendations</h2>
+            <div class="section-actions">
+              <span id="movieCount" class="count-badge">0 Movies</span>
+            </div>
+          </div>
+
+          <div id="loadingState" class="loading-state">
+            <div class="skeleton-grid">
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+            </div>
+          </div>
+          
+          <div id="movieGrid" class="movie-grid">
+            <!-- Movie cards injected here -->
+          </div>
+
+          <div id="emptyState" class="empty-state hidden">
+            <div class="empty-icon">📂</div>
+            <h3>No movies found</h3>
+            <p>Try adjusting your search or filters.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- ── MODALS ── -->
+  <div id="modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add New Movie</h2>
+        <button id="closeModal" class="close-btn">✕</button>
+      </div>
+      
+      <form id="movieForm">
+        <input type="hidden" id="movieId" />
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>Movie Title</label>
+            <input type="text" id="titleInput" placeholder="Enter title" required />
+            <small id="titleError" class="error-text"></small>
+          </div>
+          
+          <div class="form-group">
+            <label>Genre</label>
+            <select id="genreInput" required>
+              <option value="" disabled selected>Select</option>
+              <option>Action</option><option>Adventure</option><option>Animation</option>
+              <option>Comedy</option><option>Drama</option><option>Horror</option>
+              <option>Sci-Fi</option><option>Thriller</option>
+            </select>
+            <small id="genreError" class="error-text"></small>
+          </div>
+
+          <div class="form-group">
+            <label>Rating</label>
+            <div class="star-input-container" id="starInput">
+              <span class="star-item" data-val="1">★</span>
+              <span class="star-item" data-val="2">★</span>
+              <span class="star-item" data-val="3">★</span>
+              <span class="star-item" data-val="4">★</span>
+              <span class="star-item" data-val="5">★</span>
+            </div>
+            <input type="hidden" id="ratingInput" />
+            <small id="ratingError" class="error-text"></small>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Poster Image URL (Optional)</label>
+            <input type="url" id="posterInput" placeholder="https://example.com/poster.jpg" />
+            <small id="posterError" class="error-text"></small>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Recommend to friends?</label>
+            <div class="radio-group">
+              <label class="radio-item">
+                <input type="radio" name="recommendation" value="Yes" id="recYes" />
+                <span class="radio-btn">👍 Highly Recommend</span>
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="recommendation" value="No" id="recNo" />
+                <span class="radio-btn">👎 Skip it</span>
+              </label>
+            </div>
+            <small id="recError" class="error-text"></small>
+          </div>
+        </div>
+
+        <div id="formError" class="form-error hidden"></div>
+
+        <div class="modal-footer">
+          <button type="button" id="cancelModal" class="btn btn-secondary">Cancel</button>
+          <button type="submit" id="submitBtn" class="btn btn-primary">Save Movie</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal-overlay hidden">
+    <div class="modal-card sm">
+      <div class="confirm-content">
+        <div class="warning-icon">⚠️</div>
+        <h3>Delete Movie?</h3>
+        <p id="confirmText">This action is permanent.</p>
+      </div>
+      <div class="modal-footer centered">
+        <button id="cancelDelete" class="btn btn-secondary">Keep it</button>
+        <button id="confirmDelete" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
